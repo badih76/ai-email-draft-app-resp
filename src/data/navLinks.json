@@ -1,0 +1,7 @@
+[
+  { "name": "Dashboard", "href": "/dashboard", "icon": "bar-chart" },
+  { "name": "New Draft", "href": "/dashboard/new-email", "icon": "file-plus" },
+  { "name": "Saved Drafts", "href": "/dashboard/saved-drafts", "icon": "file-archive" },
+  { "name": "Account", "href": "/dashboard/user-account", "icon": "circle-user-round" },
+  { "name": "Billing & Quota", "href": "/dashboard/billing-quota", "icon": "dollar-sign" }
+]

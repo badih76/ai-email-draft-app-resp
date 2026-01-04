@@ -1,0 +1,2 @@
+ALTER TABLE `email_drafts` MODIFY COLUMN `createDateTime` datetime DEFAULT '2025-12-08 01:17:45.538';--> statement-breakpoint
+ALTER TABLE `users` MODIFY COLUMN `createdAt` datetime DEFAULT '2025-12-08 01:17:45.537';
