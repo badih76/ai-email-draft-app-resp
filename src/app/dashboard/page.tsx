@@ -4,8 +4,10 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
 import { KindeUser } from "@kinde-oss/kinde-auth-nextjs/types";
 import Link from 'next/link';
-import { IDraftCard } from '@/lib/interfaces';
+import { IDraftCard, IQuotaUsage } from '@/lib/interfaces';
 import fetchAndCreateDraftCards from '@/lib/fetchSavedDrafts';
+import { getMonthQuotaUsage } from './actions';
+import { EllipsisVertical, Eye } from 'lucide-react';
 
 export default async function DashboardPage() {
   const { getUser } = getKindeServerSession();
@@ -13,6 +15,10 @@ export default async function DashboardPage() {
   const userId = user?.id;
   const desData = { userId, count: 3 };
   const drafts: IDraftCard[] = await fetchAndCreateDraftCards(desData);
+
+  const quotaUsage: IQuotaUsage = await getMonthQuotaUsage(userId!, new Date().getMonth());
+
+  console.log('quotaUsage: ', quotaUsage);
 
   return (
     <div className="space-y-8">
@@ -38,9 +44,21 @@ export default async function DashboardPage() {
         {drafts.map((draft) => (
           <Card key={draft.id} className="shadow-md hover:shadow-lg transition-shadow duration-200 dark:bg-gray-800">
             <CardHeader>
-              <CardTitle className="text-indigo-600 dark:text-indigo-400 text-lg truncate">
-                {draft.title}
-              </CardTitle>
+              <div className='w-full flex flex-row justify-between items-center'>
+                <div>
+                  <CardTitle className="text-indigo-600 dark:text-indigo-400 text-lg line-clamp-2">
+                    {draft.title.substring(0, 40)+'...'}
+                  </CardTitle>
+                </div>
+                <div className='flex flex-row justify-start items-start'>
+                  {/* <EllipsisVertical size={32} /> */}
+                  <Link className='p-0 h-auto dark:text-indigo-300' title='View Draft'
+                    href={"/dashboard/saved-draft?userId=" + userId + "&draftId=" + draft.id}>
+                    {/* View Draft */}
+                    <Eye size={32} />
+                  </Link>
+                </div>
+              </div>
               <p className="text-sm text-gray-500 dark:text-gray-400">{draft.date}</p>
             </CardHeader>
             <CardContent>
@@ -50,10 +68,13 @@ export default async function DashboardPage() {
               {/* <Button variant="link" className="p-0 h-auto mt-2 text-indigo-500 dark:text-indigo-300">
                 View Draft
               </Button> */}
-              <Link className='p-0 h-auto mt-2 text-indigo-500 dark:text-indigo-300'
-                href={"/dashboard/saved-draft?userId=" + userId + "&draftId=" + draft.id}>
-                View Draft
-              </Link>
+              <br />
+              {/* <p>
+                <Link className='p-0 h-auto mt-2 text-indigo-500 dark:text-indigo-300' title='View Draft'
+                  href={"/dashboard/saved-draft?userId=" + userId + "&draftId=" + draft.id}>
+                  <Eye size={42} />
+                </Link>
+              </p> */}
             </CardContent>
           </Card>
         ))}
@@ -65,7 +86,11 @@ export default async function DashboardPage() {
       <div className="p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md mt-8">
         <h3 className="text-xl font-semibold">Your Usage Stats</h3>
         <p className="text-gray-500 mt-2">
-          Summary of drafts generated this month: 15 / 50 limit.
+          <span className='font-medium text-indigo-600'>User Plan:</span> {quotaUsage.userPlan}.
+          <br />
+          <span className='font-medium text-indigo-600'>Summary of drafts generated this month:</span> {quotaUsage.drafts} / {quotaUsage.draftsQuota}.
+          <br />
+          <span className='font-medium text-indigo-600'>Saved drafts:</span> {quotaUsage.saves} / {quotaUsage.saveQuota}.
         </p>
       </div>
     </div>

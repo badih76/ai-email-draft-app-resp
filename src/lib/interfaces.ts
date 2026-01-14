@@ -54,3 +54,12 @@ export interface IBillingTransaction {
     date: string,
     type: "Invoice" | "Payment",
 }
+
+export interface IQuotaUsage {
+  month: number,
+  drafts: number,
+  draftsQuota: number,
+  saves: number,
+  saveQuota: number,
+  userPlan: number
+}
