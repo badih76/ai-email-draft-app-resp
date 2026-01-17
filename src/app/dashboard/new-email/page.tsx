@@ -12,6 +12,7 @@ import { IDraftEmailSave, IDraftInputs } from '@/lib/interfaces';
 import { useSearchParams } from 'next/navigation';
 import { Filter } from 'bad-words';
 import { ToastError } from '@/lib/sonnerUtils';
+import FilterEx from '@/lib/badWordsUtils';
 
 // Define the shape of the user input state
 
@@ -122,13 +123,7 @@ export default function NewEmailDraftPage() {
   }
 
   const handleIsProfane = (text: string): string => {
-    const filter = new Filter();
-
-    // console.log("******************************************");
-    console.log("IsProfane: ", filter.isProfane(text));
-    console.log("replaceWord: ", filter.replaceWord(text));
-    console.log("clean: ", filter.clean(text));
-    // console.log("******************************************");
+    const filter = new FilterEx();
 
     console.log("Empty Clean: ", filter.cleanExclude(text));
     if(filter.isProfane(text)) {
