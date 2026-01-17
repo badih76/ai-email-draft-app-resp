@@ -1,16 +1,20 @@
 import Link from "next/link";
 import { Twitter, Facebook, Instagram } from "lucide-react";
+import Image from "next/image";
+import CartaAILogoSMDark from '@/../public/images/Carta-ai_Logo_sm_dark.png';
 
 export default function Footer() {
   return (
     <footer className="w-full bg-slate-900 text-slate-300 py-8 mt-auto">
       <div className="container mx-auto flex flex-col md:flex-row justify-between items-center px-6">
         <div className="mb-4 md:mb-0">
-          <div className="font-semibold text-white flex flex-row justify-start items-center">
-            <span className='font-pacifico text-lg mr-2 font-normal'>Carta</span>
+          <div className="font-semibold text-white flex flex-row justify-center items-center">
+            {/* <span className='font-pacifico text-lg mr-2 font-normal'>Carta</span>
             <div className="h-7 w-7 bg-indigo-600 rounded-tr-sm rounded-bl-sm flex items-center justify-center">
                 <span className="text-white text-xs">AI</span>
-            </div>
+            </div> */}
+            <Image src={CartaAILogoSMDark} 
+              className='ml-2 h-6 w-20 md:h-6 md:w-20' alt='Carta-AI Logo at the header' />
           </div>
           <p className="text-xs mt-1">&copy; {new Date().getFullYear()} All rights reserved.</p>
         </div>

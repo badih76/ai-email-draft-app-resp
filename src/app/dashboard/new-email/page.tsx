@@ -10,6 +10,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Loader2, Copy, Save } from 'lucide-react';
 import { IDraftEmailSave, IDraftInputs } from '@/lib/interfaces';
 import { useSearchParams } from 'next/navigation';
+import { Filter } from 'bad-words';
+import { ToastError } from '@/lib/sonnerUtils';
 
 // Define the shape of the user input state
 
@@ -119,6 +121,28 @@ export default function NewEmailDraftPage() {
 
   }
 
+  const handleIsProfane = (text: string): string => {
+    const filter = new Filter();
+
+    // console.log("******************************************");
+    console.log("IsProfane: ", filter.isProfane(text));
+    console.log("replaceWord: ", filter.replaceWord(text));
+    console.log("clean: ", filter.clean(text));
+    // console.log("******************************************");
+
+    console.log("Empty Clean: ", filter.cleanExclude(text));
+    if(filter.isProfane(text)) {
+      const filteredText = filter.cleanExclude(text);
+      setError("The usage of profane, offensive and inappropriate words is not allowed!");
+      ToastError("The usage of profane, offensive and inappropriate words is not allowed!");
+      return filteredText;
+    } else {
+      setError(null);
+      return text;
+    }
+    
+  }
+
   return (
     <div className="space-y-4 max-w-7xl mx-auto">
       <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-100">
@@ -146,9 +170,9 @@ export default function NewEmailDraftPage() {
           <CardContent className="p-6 space-y-6">
             <div className="space-y-2">
               <Label htmlFor="title" className='text-indigo-600'>Draft Title</Label>
-              <Input type="text" placeholder='Draft Title...' 
+              <Input type="text" placeholder='Draft Title...' value={draft.title}
                 onChange={(e) => {
-                  let title = e.currentTarget.value;
+                  let title = handleIsProfane(e.currentTarget.value);
                   setDraft(prev => ({...prev, title}))
                 }} disabled={isMyLoading} />
             </div>
@@ -156,46 +180,21 @@ export default function NewEmailDraftPage() {
             {/* User Role Input */}
             <div className="space-y-2">
               <Label htmlFor="userRole" className='text-indigo-600'>Your Role (Sender)</Label>
-              <Input type="text" placeholder='Your Role (Sender)...' 
+              <Input type="text" placeholder='Your Role (Sender)...' value={draft.userRole}
                 onChange={(e) => {
-                  let userRole = e.currentTarget.value;
+                  let userRole = handleIsProfane(e.currentTarget.value);
                   setDraft(prev => ({...prev, userRole}))
                 }} disabled={isMyLoading} />
-              {/* <Select onValueChange={(value) => setDraft(prev => ({...prev, userRole: value}))} disabled={isLoading}>
-                <SelectTrigger id="userRole">
-                  <SelectValue placeholder="Select your profession/role" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Sales Lead">Sales Lead</SelectItem>
-                  <SelectItem value="Project Manager">Project Manager</SelectItem>
-                  <SelectItem value="Hiring Manager">Hiring Manager</SelectItem>
-                  <SelectItem value="Customer Support">Customer Support</SelectItem>
-                  <SelectItem value="CEO">CEO</SelectItem>
-                  <SelectItem value="Intern">Intern</SelectItem>
-                </SelectContent>
-              </Select> */}
             </div>
 
             {/* Recipient Role Input */}
             <div className="space-y-2">
               <Label htmlFor="recipientRole" className='text-indigo-600'>Recipient's Role</Label>
-              <Input type="text" placeholder='Recipient Role...' 
+              <Input type="text" placeholder='Recipient Role...' value={draft.recipientRole}
                 onChange={(e) => {
-                  let recipientRole = e.currentTarget.value;
+                  let recipientRole = handleIsProfane(e.currentTarget.value);
                   setDraft(prev => ({...prev, recipientRole}))
                 }} disabled={isMyLoading} />
-              {/* <Select onValueChange={(value) => setDraft(prev => ({...prev, recipientRole: value}))} disabled={isLoading}>
-                <SelectTrigger id="recipientRole">
-                  <SelectValue placeholder="Select recipient's role" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Client">Client</SelectItem>
-                  <SelectItem value="Team Member">Team Member</SelectItem>
-                  <SelectItem value="Job Candidate">Job Candidate</SelectItem>
-                  <SelectItem value="Upper Management">Upper Management</SelectItem>
-                  <SelectItem value="Vendor">Vendor</SelectItem>
-                </SelectContent>
-              </Select> */}
             </div>
 
             {/* Tone Input */}
@@ -223,7 +222,10 @@ export default function NewEmailDraftPage() {
                 id="details"
                 placeholder="e.g., Confirming the next meeting is Friday at 2 PM regarding the Q4 budget. We need to discuss the new marketing plan."
                 value={draft.details}
-                onChange={(e) => setDraft(prev => ({...prev, details: e.target.value}))}
+                onChange={(e) => {
+                  const details = handleIsProfane(e.currentTarget.value);
+                  setDraft(prev => ({...prev, details}))}
+                }
                 rows={7}
                 disabled={isMyLoading}
               />

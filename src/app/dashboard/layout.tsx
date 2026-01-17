@@ -5,6 +5,7 @@ import { redirect } from 'next/navigation';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import DashboardSidebar from '@/components/dashboard-sidebar';
+import { Toaster } from 'sonner';
 
 export default async function DashboardLayout({
   children
@@ -37,6 +38,7 @@ export default async function DashboardLayout({
             {children}
           </div>
         </main>
+        <Toaster />
       </div>
       <Footer />
     </>
